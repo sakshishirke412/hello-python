@@ -24,8 +24,10 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    withEnv(["PATH+SONAR=${tool 'SonarScanner'}/bin"]) {
-                        sh 'sonar-scanner'
+                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                        withEnv(["PATH+SONAR=${tool 'SonarScanner'}/bin"]) {
+                            sh 'sonar-scanner -Dsonar.token=$SONAR_TOKEN'
+                        }
                     }
                 }
             }
